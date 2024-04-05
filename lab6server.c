@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
   int remainingData; 
   int bytesRead;
   char buffer[BUFSIZ];
+  char filepathBuffer[BUFSIZ];
 
   serverSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (serverSocket == -1) {
@@ -132,9 +133,10 @@ int main(int argc, char *argv[]) {
     * The server will receive the file path from the client
     * if filepath is not received, an error will be thrown
     */
-    char filepathBuffer[BUFSIZ];
-    int filePathlength = recv(peerSocket, filepathBuffer, BUFSIZ, 0); 
-    if(filePathlength < 0){
+    int filepathLength = recv(peerSocket, filepathBuffer, BUFSIZ, 0);
+    filepathBuffer[filepathLength] = '\0';
+
+    if(filepathLength < 0){
       error("Missing Filepath", "No file path recieved from client...");
     } else {
       fprintf(stdout, "Server: File to retrieve for client: %s \n", filepathBuffer);
@@ -197,10 +199,10 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Server: Done sending data... \n");
+    close(peerSocket);
 
   }
   close(serverSocket);
-  close(peerSocket);
 }
 
 /*
