@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
   len = recv(clientSocket, fileSizeBuffer, BUFSIZ, 0);
   printf("Client: Expecting filesize of %s \n", fileSizeBuffer);
 
-  int receivedFile = open(newFilename, O_WRONLY | O_CREAT, 0644);
+  int receivedFile = open(newFilename, O_TRUNC | O_WRONLY | O_CREAT, 0644);
 
   // printf("%d\n", strargv[0]);
   if (receivedFile == -1) {
