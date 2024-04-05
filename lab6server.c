@@ -42,8 +42,8 @@
 * PORT_NUM - Port number of the server
 * BLOCK_SIZE - Size of the block to send
 */
-#define SERVER_ADDRESS      "localhost" 
-#define PORT_NUM             58129
+#define SERVER_ADDRESS      "127.0.0.1" 
+#define PORT_NUM             8080
 #define BLOCK_SIZE           1024
 
 /*
@@ -80,16 +80,20 @@ int main(int argc, char *argv[]) {
   ssize_t len; 
   int fd; 
   int sentBytes = 0; 
-  char fileSize[256];
+  char fileSize[BUFSIZ];
   struct stat fileStat;
   off_t offset; 
   int remainingData; 
   int bytesRead;
-  char buffer[1024];
+  char buffer[BUFSIZ];
 
   serverSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (serverSocket == -1) {
     error("Socket Creation", "Error creating socket");
+  }
+
+  if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0) {
+    error("SO_REUSEADDR", "failed operation");
   }
 
 /*
@@ -153,8 +157,8 @@ int main(int argc, char *argv[]) {
       error("File Stat", "Error on filestat");
     }
 
-    fprintf(stdout, "Server: File Size: %d bytes\n", fileStat.st_size);
-    sprintf(fileSize, "%d", fileStat.st_size); 
+    fprintf(stdout, "Server: File Size: %ld bytes\n", fileStat.st_size);
+    sprintf(fileSize, "%ld", fileStat.st_size); 
 
     /*
     * The server will send the file content to the client
@@ -166,34 +170,37 @@ int main(int argc, char *argv[]) {
     }
 
     offset = 0; 
-    remainingData = fileStat.st_size; 
+    remainingData = fileStat.st_size;
     int dataSizeToSend = BLOCK_SIZE; 
 
     while (remainingData > 0) {
-    bytesRead = read(fd, buffer, sizeof(buffer));
-    if (bytesRead <= 0) {
-        break;
-    }
+      bytesRead = read(fd, buffer, sizeof(buffer));
+      if (bytesRead <= 0) {
+          break;
+      }
 
-    /*
-    * The server will send the file data to the client
-    * if the file data cannot be sent, an error will be thrown
-    */
-    sentBytes = write(peerSocket, buffer, bytesRead);
-    fprintf(stdout, "Server: sent %d bytes from file's data, offset is now : %d and remaining data = %d\n", sentBytes, offset, remainingData);
-    remainingData -= sentBytes;
+      /*
+      * The server will send the file data to the client
+      * if the file data cannot be sent, an error will be thrown
+      */
+      sentBytes = send(peerSocket, buffer, bytesRead, 0);
+      fprintf(stdout, "Server: sent %d bytes from file's data, offset is now : %ld and remaining data = %d\n", sentBytes, offset, remainingData);
+      remainingData -= sentBytes;
 
-    /*
-    * if the remaining data is less than the data size to send, the data size to send will be updated
-    */
-    if(remainingData < dataSizeToSend) {
+      /*
+      * if the remaining data is less than the data size to send, the data size to send will be updated
+      */
+      if(remainingData < dataSizeToSend) {
         printf("New data size to send: %d \n", dataSizeToSend);
         dataSizeToSend = remainingData;
+      }
     }
-}
 
     printf("Server: Done sending data... \n");
+
   }
+  close(serverSocket);
+  close(peerSocket);
 }
 
 /*

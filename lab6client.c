@@ -22,8 +22,8 @@
 
 typedef enum { false = 0, true = !false } bool;
 
-#define SERVER_ADDRESS      "localhost"
-#define PORT_NUM             58129 
+#define SERVER_ADDRESS      "127.0.0.1"
+#define PORT_NUM             8080 
 #define OUTPUT_FILENAME      "lab_sourcefile_local_clone"
 
 struct Arguments {
@@ -61,6 +61,20 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  char *filebase = strrchr(argv[2], '/');
+  char *newFilenameBase = "_local_clone";
+
+  if (filebase == NULL) {
+    filebase = argv[2];
+  } else {
+    filebase += 1;
+  }
+
+  int newFilenameLen = strlen(filebase) + strlen(newFilenameBase);
+  char newFilename[newFilenameLen];
+  strcpy(newFilename, filebase);
+  strcat(newFilename, newFilenameBase);
+
   memset(&remote_addr, 0, sizeof(remote_addr));
 
   remote_addr.sin_family = AF_INET; 
@@ -76,42 +90,44 @@ int main(int argc, char *argv[]) {
     error("Socket Connect", "Error connecting to server...");
   }
 
-  fprintf(stdout, "Client: sending %s as file path. String size: %d ... \n", args.filepath, strlen(args.filepath));
+  fprintf(stdout, "Client: sending %s as file path. String size: %ld ... \n", args.filepath, strlen(args.filepath));
   if (send(clientSocket, args.filepath, strlen(args.filepath), 0) < 0) {
     error("send filepath", "Could not send the filepath... ");
   }
 
-  recv(clientSocket, fileSizeBuffer, BUFSIZ, 0);
+  len = recv(clientSocket, fileSizeBuffer, BUFSIZ, 0);
   printf("Client: Expecting filesize of %s \n", fileSizeBuffer);
 
-int receivedFile = open(OUTPUT_FILENAME, O_WRONLY | O_CREAT | O_APPEND, 0644);
-if (receivedFile == -1) {
-    perror("Open File");
-    exit(EXIT_FAILURE);
-}
+  int receivedFile = open(newFilename, O_WRONLY | O_CREAT, 0644);
 
-remainingData = atoi(fileSizeBuffer);
+  // printf("%d\n", strargv[0]);
+  if (receivedFile == -1) {
+      perror("Open File");
+      exit(EXIT_FAILURE);
+  }
 
+  remainingData = atoi(fileSizeBuffer);
 
-/*
-* The client will receive the file from the server and write it to a file
-* The client will keep receiving data from the server until all the data has been received
-* The client will print out the number of bytes received and the number of bytes remaining
-*/
-while ((remainingData > 0) && ((len = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0)) {
-    write(receivedFile, buffer, len);
-    remainingData -= len;
-    if (remainingData > 0) {
-        fprintf(stdout, "Client: Received %d bytes and waiting for:- %d bytes\n", len, remainingData);
-    } else {
-        fprintf(stdout, "Client: Received %d bytes. Done receiving data from server.\n", len);
-        break;
-    }
-}
+  /*
+  * The client will receive the file from the server and write it to a file
+  * The client will keep receiving data from the server until all the data has been received
+  * The client will print out the number of bytes received and the number of bytes remaining
+  */
 
-fprintf(stdout, "Client: Done writing data from server to file...\n");
-close(receivedFile);
-close(clientSocket);
+  while ((remainingData > 0) && ((len = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0)) {
+      write(receivedFile, buffer, len);
+      remainingData -= len;
+      if (remainingData > 0) {
+          fprintf(stdout, "Client: Received %ld bytes and waiting for:- %d bytes\n", len, remainingData);
+      } else {
+          fprintf(stdout, "Client: Received %ld bytes. Done receiving data from server.\n", len);
+          break;
+      }
+  }
+
+  fprintf(stdout, "Client: Done writing data from server to file...\n");
+  close(receivedFile);
+  close(clientSocket);
 
   return 0;
 }
