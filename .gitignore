@@ -3,4 +3,5 @@
 !.gitignore
 !lab6client.c
 !lab6server.c
-!/html-assignment
+!html-assignment/*
+!html-assignment/**/*
