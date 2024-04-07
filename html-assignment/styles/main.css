@@ -1,0 +1,39 @@
+/*
+  Author: Anthony Wong
+  Date: 2024-04-06
+  Description: This is the main css for assignment questions 1-6.
+*/
+
+
+@import url(reset.css);
+
+/*css pt1
+* The following CSS rules are for the hide element.
+*/
+.hide {
+  display: none;
+}
+
+/*css pt2
+* The following CSS rules are for the deep-pink element.
+*/
+.deep-pink {
+  background-color: deeppink;
+}
+
+/*css pt3
+* The following CSS rules are for the text-cloning element.
+* The text-cloning element is a flex container with a column layout.
+* Text is bolded when called in javascript
+*/
+
+.bold {
+  font-weight: bold;
+}
+
+#text-cloning {
+  display: flex;
+  flex-direction: column; 
+  justify-content: space-around;
+  align-items: center; 
+}

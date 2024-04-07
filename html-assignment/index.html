@@ -1,0 +1,104 @@
+<!-- 
+  Author: Anthony Wong
+  Date: 2024-04-06
+  Description: This is the index html for assignment questions 1-6.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/main.css"/>
+  </head>
+  <body>
+    <!--pt1 html
+    This creates a section for the image.
+    -->
+    <h2>Hidden Image</h2>
+    <section id="hidden-image">
+      <img src="./img/bruh.png">
+    </section>
+
+    <!--pt2 html
+    This creates a section for changing colours.
+    -->
+    <h2>Changing colours</h2>
+    <section id = "changing-colours">
+      <p>Click for pink background or double click for purple text. Alternates between pink and no background. Lol this is a test paragraph.</p>
+    </section>
+
+    <!--pt3 html
+    This creates a section for a text input field.
+    The user can input text into the field.
+    When the user clicks the clear button, the clearMsg function is called.
+    When the user clicks the bold button, the boldMsg function is called.
+    -->
+    <h2>Text Input</h2>
+    <section id="text-cloning">
+      <input type="text">
+      <p></p>
+      <button onclick="clearMsg()">Clear</button>
+      <button onclick="boldMsg()">Bold</button>
+    </section>
+    <!--pt4 html
+    This creates a section for a list of items.
+    -->
+    <h2>Complicated list things</h2>
+    <section id ="list-things">
+      <ul>
+        <li>Item</li>
+        <li>Item</li>
+        <li>Item</li>
+        <li>Item</li>
+        <li>Item</li>
+      </ul>
+    </section>
+    <!--pt5 html
+    This creates a section for a fetch request to get information.
+    This is the information with div tags.
+    -->
+    <h2>A simple fetch</h2>
+    <section id="simple-fetch">
+      <div>
+        <h3>Daft Punk</h3>
+        <p>Daft Punk were a French electronic music duo formed in 1993 in Paris by Thomas Bangalter and Guy-Manuel de Homem-Christo.</p>
+        <p>They achieved early popularity in the late 1990s as part of the French house movement, combining elements of house music with funk, disco, techno, rock and synth-pop.[1]</p>
+        <p>The duo garnered further acclaim and commercial success and are now regarded as one of the most influential acts in dance music history.[2]</p>
+        </p>
+      </div>
+    </section>
+    <!--pt6 html 
+    This creates a section with a label and an input field for the user to input a currency.
+    The user can select a base currency and a target currency from the dropdown menus.
+    When the user clicks the submit button, the submitCur function is called.
+    -->
+    <h2>Working with an API</h2>
+    <section id = "working-api">
+      <label>Input Currency:</label>
+      <input type="text">
+      <label for="baseCurrency">Base Currency:</label>
+      <select>
+        <option value="USD">United States Dollar (USD)</option>
+        <option value="EUR">Euro (EUR)</option>
+        <option value="JPY">Japanese Yen (JPY)</option>
+        <option value="GBP">British Pound Sterling (GBP)</option>
+        <option value="AUD">Australian Dollar (AUD)</option>
+      </select>
+      <label>Target Currency:</label>
+      <select>
+        <option value="CAD">Canadian Dollar (CAD)</option>
+        <option value="CHF">Swiss Franc (CHF)</option>
+        <option value="CNY">Chinese Yuan (CNY)</option>
+        <option value="SEK">Swedish Krona (SEK)</option>
+        <option value="NZD">New Zealand Dollar (NZD)</option>
+      </select>
+      <button onclick="submitCur()">Submit</button>
+      </section>
+      */
+    <script src = "/scripts/main.js"></script>
+  </body>
+</html>
+
+
