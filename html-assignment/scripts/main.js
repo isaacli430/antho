@@ -130,30 +130,22 @@ document.querySelector('#simple-fetch h3').addEventListener('click', function(ev
 
 
 /*pt6 js*/
-// Select the input and select fields
-/*
-const currencyInput = document.querySelector('#working-api input[type="text"]');
-const baseCurrencySelect = document.querySelector('#working-api select:nth-child(1)');
-const targetCurrencySelect = document.querySelector('#working-api select:nth-child(2)');
 
 async function getConversionRate(baseCurrency, targetCurrency) {
-  const response = await fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_dk0U84IpxO4V7NWwgQlsGmXqMLXHMNZv18Gp57WO=${baseCurrency}`);
+  const API_KEY = "fca_live_F37O5UPnu2CGaGzBR9UjTPoOGvlPr30jOKXoMe1P";
+  const response = await fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=${API_KEY}`);
   const data = await response.json();
-  const conversionRate = data.rates[targetCurrency];
+  const conversionRate = data.data[targetCurrency];
   return conversionRate;
 }
-  const conversionRate = await getConversionRate(baseCurrency, targetCurrency);
-
-  // Calculate the converted value
-  const convertedValue = currencyValue * conversionRate;
-
-  // Display the converted value
-  console.log(`Converted value: ${convertedValue}`);
-  */
-
   //this section is working, commented out is errors.
 
 function submitCur() {
+  const currencyInput = document.querySelector('#working-api input[type="text"]');
+  const baseCurrencySelect = document.querySelectorAll('#working-api select')[0];
+  const targetCurrencySelect = document.querySelectorAll('#working-api select')[1];
+  const resultP = document.querySelector('#working-api p');
+
   // Get the input value
   let currencyValue = currencyInput.value.trim();
 
@@ -172,4 +164,12 @@ function submitCur() {
       alert('Please select both base and target currencies.');
       return;
   }
+
+  getConversionRate(baseCurrency, targetCurrency).then((conversionRate) => {
+    // Calculate the converted value
+    const convertedValue = currencyValue * conversionRate;
+
+    // Display the converted value
+    resultP.innerHTML = `<section class='bold'>Resulting Value:</section> $${convertedValue.toFixed(2)}`;
+  });
 }
